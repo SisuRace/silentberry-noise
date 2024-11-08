@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  // 如果使用 Supabase 的直接连接
+  directUrl = env("DIRECT_URL")
+}
+
+model Profile {
+  id            String     @id @default(uuid())
+  walletAddress String     @unique
+  proposals     Proposal[]
+  votes         Vote[]
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
+
+  @@map("profiles")
+}
+
+model Proposal {
+  id         String         @id @default(uuid())
+  title      String
+  content    String
+  rawContent String         @map("raw_content")
+  summary    String // 新增字段
+  tags       String[]
+  status     ProposalStatus @default(PENDING)
+  txHash     String?        @map("tx_hash")
+  creator    Profile        @relation(fields: [creatorId], references: [id])
+  creatorId  String         @map("creator_id")
+  votes      Vote[]
+  createdAt  DateTime       @default(now()) @map("created_at")
+  updatedAt  DateTime       @updatedAt @map("updated_at")
+
+  @@map("proposals")
+}
+
+model Vote {
+  id         String   @id @default(uuid())
+  support    Boolean
+  txHash     String?  @map("tx_hash")
+  proposal   Proposal @relation(fields: [proposalId], references: [id])
+  proposalId String   @map("proposal_id")
+  user       Profile  @relation(fields: [userId], references: [id])
+  userId     String   @map("user_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@unique([proposalId, userId])
+  @@map("votes")
+}
+
+enum ProposalStatus {
+  PENDING
+  ACTIVE
+  REJECTED
+}
