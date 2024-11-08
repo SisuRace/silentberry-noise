@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAccount } from "wagmi";
 import ProposalPreview from "./ProposalPreview";
@@ -10,6 +10,11 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 export default function ProposalForm() {
   const router = useRouter();
   const { address } = useAccount();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const [step, setStep] = useState<"draft" | "preview">("draft");
   const [content, setContent] = useState("");
@@ -17,6 +22,14 @@ export default function ProposalForm() {
   const [error, setError] = useState<string>("");
   const [generatedProposal, setGeneratedProposal] =
     useState<GeneratedProposal | null>(null);
+
+  if (!mounted) {
+    return (
+      <div className="flex justify-center py-8">
+        <LoadingSpinner className="w-8 h-8 text-blue-600" />
+      </div>
+    );
+  }
 
   const handleSubmitDraft = async (e: React.FormEvent) => {
     e.preventDefault();

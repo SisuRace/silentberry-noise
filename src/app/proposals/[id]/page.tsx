@@ -1,8 +1,8 @@
-import { notFound } from "next/navigation";
-import { db } from "@/lib/prisma";
 import VoteButtons from "@/components/proposals/VoteButtons";
+import BackLink from "@/components/ui/BackLink";
+import { db } from "@/lib/prisma";
 import { formatDate } from "@/lib/utils/date";
-import Link from "next/link";
+import { notFound } from "next/navigation";
 
 async function getProposal(id: string) {
   const proposal = await db.proposal.findUnique({
@@ -41,25 +41,7 @@ export default async function ProposalPage({
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* 导航链接 */}
         <div className="mb-6">
-          <Link
-            href="/proposals"
-            className="text-blue-600 hover:text-blue-800 flex items-center gap-2"
-          >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-            返回提案列表
-          </Link>
+          <BackLink href="/proposals">返回提案列表</BackLink>
         </div>
 
         {/* 提案内容卡片 */}
@@ -104,6 +86,8 @@ export default async function ProposalPage({
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
+                    width={12}
+                    height={12}
                   >
                     <path
                       strokeLinecap="round"
@@ -121,6 +105,8 @@ export default async function ProposalPage({
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
+                    width={12}
+                    height={12}
                   >
                     <path
                       strokeLinecap="round"

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/prisma";
-import { submitToCKB } from "@/lib/blockchain/ckbService";
+// import { submitToCKB } from "@/lib/blockchain/ckbService";
 
 export async function POST(req: Request) {
   try {
@@ -29,7 +29,7 @@ export async function POST(req: Request) {
     }
 
     // 提交到 CKB
-    const txHash = await submitToCKB(proposal, walletAddress);
+    // const txHash = await submitToCKB(proposal, walletAddress);
 
     // 更新提案状态
     const updatedProposal = await db.proposal.update({
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
       },
       data: {
         status: "ACTIVE",
-        txHash: txHash,
+        // txHash: txHash,
       },
     });
 

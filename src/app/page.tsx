@@ -1,5 +1,7 @@
-import Link from "next/link";
+"use server";
+
 import { db } from "@/lib/prisma";
+import Link from "next/link";
 
 async function getRecentProposals() {
   const proposals = await db.proposal.findMany({

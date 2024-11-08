@@ -1,12 +1,12 @@
-import Link from "next/link";
 import { db } from "@/lib/prisma";
+import Link from "next/link";
 
 export const revalidate = 60; // 每分钟重新验证一次
 
 async function getProposals() {
   const proposals = await db.proposal.findMany({
     where: {
-      status: "ACTIVE",
+      // status: "ACTIVE",
     },
     include: {
       creator: true,

@@ -53,6 +53,7 @@ model Vote {
 }
 
 enum ProposalStatus {
+  DRAFT
   PENDING
   ACTIVE
   REJECTED

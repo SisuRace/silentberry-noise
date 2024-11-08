@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import type { GeneratedProposal } from "@/lib/ai/proposalGenerator";
+import { GeneratedProposal } from "@/lib/ai/proposalGenerator";
+import { useEffect, useState } from "react";
 
 interface ProposalPreviewProps {
   original: string;
@@ -20,8 +20,17 @@ export default function ProposalPreview({
   onEdit,
   isLoading = false,
 }: ProposalPreviewProps) {
+  const [mounted, setMounted] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedProposal, setEditedProposal] = useState(generated);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <div className="space-y-6">
