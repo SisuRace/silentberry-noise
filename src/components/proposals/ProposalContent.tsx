@@ -136,6 +136,29 @@ export default function ProposalContent({
             />
           )}
         </div>
+
+        <div className="mt-8">
+          <h2 className="text-lg font-semibold text-gray-900">投票信息</h2>
+          <ul className="mt-4 space-y-2">
+            {proposal.votes.map((vote) => (
+              <li key={vote.id} className="flex items-center justify-between">
+                <span>
+                  {vote.user.walletAddress} - {vote.support ? "支持" : "反对"}
+                </span>
+                {vote.txHash && (
+                  <a
+                    href={`https://explorer.nervos.org/transaction/${vote.txHash}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-blue-600 hover:underline"
+                  >
+                    查看链上交易
+                  </a>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
