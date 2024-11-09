@@ -6,7 +6,7 @@ const openai = new OpenAI({
 });
 
 export type GeneratedProposal = {
-  id?: string; // 添加可选的 id 字段
+  id?: string; // Adds an optional id field
   title: string;
   content: string;
   summary: string;
@@ -18,17 +18,17 @@ export async function generateProposal(
 ): Promise<GeneratedProposal> {
   try {
     const prompt = `
-请将以下公民诉求转换为正式的提案格式。请使用中文回复，并严格按照以下JSON格式输出：
+Please convert the following citizen's appeal into a formal proposal format. Please use English and strictly follow the following JSON format output:
 
-原始诉求：
+Original appeal:
 ${rawContent}
 
-请生成一个包含以下字段的JSON：
+Please generate a JSON with the following fields:
 {
-  "title": "简明扼要的提案标题",
-  "content": "完整的提案内容，包含以下部分：\n1. 背景说明\n2. 问题分析\n3. 具体建议\n4. 预期效果",
-  "summary": "100字以内的提案摘要",
-  "tags": ["相关标签，最多3个"]
+  "title": "A concise proposal title",
+  "content": "Complete proposal content, including the following parts:\n1. Background explanation\n2. Problem analysis\n3. Specific recommendations\n4. Expected outcomes",
+  "summary": "A summary of the proposal within 100 words",
+  "tags": ["related tags, up to 3"]
 }
 `;
 
@@ -38,7 +38,7 @@ ${rawContent}
         {
           role: "system",
           content:
-            "你是一个专业的政策分析师，擅长将公民诉求转化为规范的政策提案。",
+            "You are a professional policy analyst, skilled in converting citizen appeals into standardized policy proposals.",
         },
         {
           role: "user",
@@ -49,7 +49,7 @@ ${rawContent}
       response_format: { type: "json_object" },
     });
     if (!response.choices[0].message.content) {
-      throw new Error("生成的提案内容为空");
+      throw new Error("Generated proposal content is empty");
     }
     const result = JSON.parse(
       response.choices[0].message.content
@@ -57,8 +57,8 @@ ${rawContent}
     validateProposal(result);
     return result;
   } catch (error) {
-    console.error("AI 生成提案失败:", error);
-    throw new Error("生成提案失败，请稍后重试");
+    console.error("AI proposal generation failed:", error);
+    throw new Error("Proposal generation failed, please try again later");
   }
 }
 
@@ -69,23 +69,23 @@ function validateProposal(
 
   for (const field of requiredFields) {
     if (!proposal[field as keyof GeneratedProposal]) {
-      throw new Error(`生成的提案缺少必要字段: ${field}`);
+      throw new Error(`Generated proposal lacks necessary field: ${field}`);
     }
   }
 
   if (typeof proposal.title !== "string" || proposal.title.length < 5) {
-    throw new Error("提案标题格式不正确");
+    throw new Error("Proposal title format is incorrect");
   }
 
   if (typeof proposal.content !== "string" || proposal.content.length < 100) {
-    throw new Error("提案内容过短");
+    throw new Error("Proposal content is too short");
   }
 
   if (typeof proposal.summary !== "string" || proposal.summary.length > 200) {
-    throw new Error("提案摘要格式不正确");
+    throw new Error("Proposal summary format is incorrect");
   }
 
   if (!Array.isArray(proposal.tags) || proposal.tags.length === 0) {
-    throw new Error("提案标签格式不正确");
+    throw new Error("Proposal tags format is incorrect");
   }
 }

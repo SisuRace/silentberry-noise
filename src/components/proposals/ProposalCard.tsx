@@ -2,12 +2,31 @@
 
 import Link from "next/link";
 // import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
-import { type Proposal } from "@prisma/client";
+import { Key } from "react";
 
 interface ProposalCardProps {
-  proposal: Proposal & {
-    creator: { walletAddress: string };
-    votes: { support: boolean }[];
+  proposal: {
+    title: string;
+    summary: string;
+    tags: string[];
+    status: string;
+    id: Key | null | undefined;
+    creator: {
+      id: string;
+      createdAt: Date;
+      updatedAt: Date;
+      walletAddress: string;
+    };
+    votes: {
+      id: string;
+      txHash: string | null;
+      clusterId: string | null;
+      createdAt: Date;
+      support: boolean;
+      dobId: string | null;
+      proposalId: string;
+      userId: string;
+    }[];
   };
 }
 

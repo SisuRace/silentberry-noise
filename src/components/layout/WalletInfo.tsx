@@ -30,8 +30,8 @@ export default function WalletInfo() {
   };
 
   const handleSignOut = async () => {
-    disconnect();
     await signOut({ redirect: true, redirectTo: "/" });
+    disconnect();
   };
 
   return (

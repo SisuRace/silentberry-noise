@@ -1,17 +1,18 @@
 import { auth } from "@/lib/auth/auth";
 import { db } from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const id = (await params).id;
     const { txHash, clusterId } = await request.json();
     const session = await auth();
 
     const updatedProposal = await db.proposal.update({
-      where: { id: params.id, creatorId: session?.user.id },
+      where: { id: id, creatorId: session?.user.id },
       data: {
         txHash,
         clusterId,

@@ -1,9 +1,9 @@
-import BackLink from "@/components/ui/BackLink";
 import ProposalList from "@/components/proposals/ProposalList";
+import BackLink from "@/components/ui/BackLink";
 import { auth } from "@/lib/auth/auth";
 import { db } from "@/lib/prisma";
 
-export async function getMyProposals(id?: string | null) {
+async function getMyProposals(id?: string | null) {
   if (!id) return [];
 
   const proposals = await db.proposal.findMany({

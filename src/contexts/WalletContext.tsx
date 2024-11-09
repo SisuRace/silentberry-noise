@@ -89,6 +89,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     signer?.getInternalAddress().then((a) => setAddress(a));
   }, [signer]);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [messages, setMessages] = useState<
     ["error" | "info", string, ReactNode][]
   >([]);
@@ -116,6 +117,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const handler = (event: PromiseRejectionEvent) => {
       const msg = (() => {
         if (typeof event.reason === "object" && event.reason !== null) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const { name, message, stack, cause } = (event as any).reason;
           return JSON.stringify({ name, message, stack, cause });
         }
