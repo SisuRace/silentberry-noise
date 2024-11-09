@@ -9,13 +9,14 @@ export default function CreateProposalPage() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-6">
-          <BackLink href="/proposals">返回提案列表</BackLink>
+          <BackLink href="/proposals">Back to Proposals</BackLink>
         </div>
 
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">创建提案</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Create Proposal</h1>
           <p className="mt-2 text-gray-600">
-            请描述您的诉求，AI 将帮助您生成规范的提案内容
+            Please describe your requirements, AI will help you generate
+            standardized proposal content
           </p>
         </div>
 

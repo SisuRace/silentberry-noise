@@ -44,9 +44,9 @@ export async function POST(req: Request) {
       data: updatedProposal,
     });
   } catch (error) {
-    console.error("提案确认失败:", error);
+    console.error("Failed to confirm the proposal:", error);
     return NextResponse.json(
-      { error: "提案确认失败，请稍后重试" },
+      { error: "Failed to confirm the proposal" },
       { status: 500 }
     );
   }

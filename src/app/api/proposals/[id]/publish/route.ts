@@ -21,7 +21,7 @@ export async function POST(
 
     return NextResponse.json(updatedProposal);
   } catch (error) {
-    console.error("提案确认失败:", error);
+    console.error("Failed to confirm the proposal:", error);
     return NextResponse.json(
       { error: "Failed to update proposal" },
       { status: 500 }

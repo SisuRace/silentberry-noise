@@ -17,7 +17,7 @@ export async function POST(
 
     return NextResponse.json(updatedProposal);
   } catch (error) {
-    console.error("提案更新失败:", error);
+    console.error("Failed to update proposal:", error);
     return NextResponse.json(
       { error: "Failed to update proposal" },
       { status: 500 }

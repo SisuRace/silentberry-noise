@@ -30,9 +30,9 @@ export async function POST(req: Request) {
       generated: savedProposal,
     });
   } catch (error) {
-    console.error("生成提案失败:", error);
+    console.error("Failed to generate proposal:", error);
     return NextResponse.json(
-      { error: "生成提案失败，请稍后重试" },
+      { error: "Failed to generate proposal" },
       { status: 500 }
     );
   }

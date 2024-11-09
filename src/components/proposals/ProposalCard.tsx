@@ -65,7 +65,7 @@ export default function ProposalCard({ proposal }: ProposalCardProps) {
 
         <div className="flex justify-between items-center text-sm text-gray-500">
           <div className="flex items-center gap-2">
-            <span>提案人:</span>
+            <span>Creator:</span>
             <a
               href={`https://pudge.explorer.nervos.org/address/${proposal.creator.walletAddress}`}
               target="_blank"
@@ -81,7 +81,7 @@ export default function ProposalCard({ proposal }: ProposalCardProps) {
             href={`/proposals/${proposal.id}`}
             className="text-blue-600 hover:text-blue-800"
           >
-            查看详情 →
+            View Details →
           </Link>
         </div>
 
@@ -95,9 +95,9 @@ export default function ProposalCard({ proposal }: ProposalCardProps) {
                 />
               </div>
               <span className="text-sm text-gray-500">
-                {supportPercentage}% 支持
+                {supportPercentage}% Support
               </span>
-              <span className="text-sm text-gray-500">({voteCount} 票)</span>
+              <span className="text-sm text-gray-500">({voteCount} Votes)</span>
             </div>
           </div>
         )}

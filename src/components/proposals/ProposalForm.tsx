@@ -36,12 +36,12 @@ export default function ProposalForm() {
     e.preventDefault();
 
     if (!signer) {
-      setError("请先连接钱包");
+      setError("Please connect your wallet first");
       return;
     }
 
     if (!content.trim()) {
-      setError("请输入诉求内容");
+      setError("Please enter your request");
       return;
     }
 
@@ -61,13 +61,19 @@ export default function ProposalForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "提案生成失败，请稍后重试");
+        throw new Error(
+          data.error || "Failed to generate proposal, please try again later"
+        );
       }
 
       setGeneratedProposal(data.generated);
       setStep("preview");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "网络错误，请稍后重试");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Network error, please try again later"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -75,11 +81,11 @@ export default function ProposalForm() {
 
   const handlePublish = async () => {
     if (!generatedProposal?.id) {
-      setError("提案信息不完整，请重试");
+      setError("Incomplete proposal information, please try again");
       return;
     }
     if (!signer) {
-      setError("请先连接钱包");
+      setError("Please connect your wallet first");
       return;
     }
 
@@ -105,15 +111,15 @@ export default function ProposalForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "发布失败");
+        throw new Error(data.error || "Failed to publish");
       }
 
       router.push(`/proposals/${data.id}`);
 
       // toast.success("提案已成功发布到链上");
     } catch (error) {
-      console.error("发布失败:", error);
-      //   toast.error("发布失败：" + error.message);
+      console.error("Publish failed:", error);
+      //   toast.error("Publish failed: " + error.message);
     } finally {
       setIsLoading(false);
     }
@@ -136,10 +142,10 @@ export default function ProposalForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "更新失败");
+        throw new Error(data.error || "Failed to update");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "更新失败");
+      setError(err instanceof Error ? err.message : "Failed to update");
     } finally {
       setIsLoading(false);
     }
@@ -173,7 +179,7 @@ export default function ProposalForm() {
           htmlFor="content"
           className="block text-sm font-medium text-gray-700"
         >
-          您的诉求
+          Your Request
         </label>
         <div className="mt-1">
           <textarea
@@ -184,14 +190,15 @@ export default function ProposalForm() {
               setContent(e.target.value);
               setError("");
             }}
-            className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
-            placeholder="请详细描述您的诉求..."
+            className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md p-2"
+            placeholder="Please describe your request in detail..."
             required
             disabled={isLoading}
           />
         </div>
         <p className="mt-2 text-sm text-gray-500">
-          请尽可能详细地描述您的诉求，这将帮助我们生成更好的提案。
+          Please describe your request in detail, this will help us generate a
+          better proposal.
         </p>
       </div>
 
@@ -206,7 +213,7 @@ export default function ProposalForm() {
           className="inline-flex items-center justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-blue-400 gap-2"
         >
           {isLoading && <LoadingSpinner className="w-4 h-4" />}
-          {isLoading ? "生成中..." : "生成提案"}
+          {isLoading ? "Generating..." : "Generate Proposal"}
         </button>
       </div>
     </form>

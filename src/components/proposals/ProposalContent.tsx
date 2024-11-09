@@ -7,6 +7,7 @@ import { $Enums, Profile, Proposal, Vote } from "@prisma/client";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import VoteButtons from "./VoteButtons";
+import { useRouter } from "next/navigation";
 
 interface ProposalProps extends Proposal {
   votes: Vote[];
@@ -19,6 +20,7 @@ export default function ProposalContent({
   proposal: ProposalProps;
 }) {
   const [isPublishing, setIsPublishing] = useState(false);
+  const router = useRouter();
   const { signer } = useApp();
   const voteCount = proposal.votes?.length || 0;
   const supportCount = proposal.votes?.filter((v) => v.support).length || 0;
@@ -27,7 +29,7 @@ export default function ProposalContent({
 
   const handlePublish = async () => {
     if (!signer) {
-      toast.error("请先连接钱包");
+      toast.error("Please connect your wallet first");
       return;
     }
 
@@ -46,13 +48,16 @@ export default function ProposalContent({
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "提案发布失败，请稍后重试");
+        throw new Error(
+          data.error || "Failed to publish proposal, please try again later"
+        );
       }
 
-      toast.success("提案已成功发布到链上");
+      router.refresh();
+      toast.success("Proposal published successfully");
     } catch (error) {
-      console.error("发布失败:", error);
-      //   toast.error("发布失败：" + error.message);
+      console.error("Publish failed:", error);
+      // toast.error("Publish failed: " + error.message);
     } finally {
       setIsPublishing(false);
     }
@@ -67,7 +72,7 @@ export default function ProposalContent({
               {proposal.title}
             </h1>
             <div className="flex items-center text-sm text-gray-500 space-x-4">
-              <span>由 {proposal.creator.walletAddress} 发起</span>
+              <span>By {proposal.creator.walletAddress}</span>
               <span>·</span>
               <span>{formatDate(proposal.createdAt)}</span>
               {proposal.txHash && (
@@ -79,7 +84,7 @@ export default function ProposalContent({
                     rel="noopener noreferrer"
                     className="flex items-center hover:text-blue-600"
                   >
-                    查看交易
+                    View Transaction
                   </a>
                 </>
               )}
@@ -105,20 +110,45 @@ export default function ProposalContent({
                     : "bg-blue-600 hover:bg-blue-700"
                 }`}
             >
-              {isPublishing ? "发布中..." : "发布到链上"}
+              {isPublishing ? "Publishing..." : "Publish to Blockchain"}
             </button>
           </div>
         )}
-
         <div className="prose max-w-none mb-8">
-          <div dangerouslySetInnerHTML={{ __html: proposal.content }} />
+          <div className="mt-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              Summary
+            </h3>
+            <p>{proposal.summary}</p>
+          </div>
+          <div className="mt-4">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">
+              Content
+            </h3>
+            <div dangerouslySetInnerHTML={{ __html: proposal.content }} />
+          </div>
+          <div className="mt-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Tags</h3>
+            <div className="flex flex-wrap">
+              {proposal.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="m-1 p-2 bg-gray-200 rounded-full text-sm text-gray-700"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
 
         <div className="border-t pt-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">投票结果</h2>
+            <h2 className="text-lg font-semibold text-gray-900">
+              Voting Results
+            </h2>
             <div className="text-sm text-gray-500">
-              总投票数：{voteCount} · 支持率：{supportPercentage}%
+              Total Votes: {voteCount} · Support Rate: {supportPercentage}%
             </div>
           </div>
 
@@ -138,12 +168,14 @@ export default function ProposalContent({
         </div>
 
         <div className="mt-8">
-          <h2 className="text-lg font-semibold text-gray-900">投票信息</h2>
+          <h2 className="text-lg font-semibold text-gray-900">
+            Voting Information
+          </h2>
           <ul className="mt-4 space-y-2">
             {proposal.votes.map((vote) => (
               <li key={vote.id} className="flex items-center justify-between">
                 <span>
-                  {vote.user.walletAddress} - {vote.support ? "支持" : "反对"}
+                  {vote.userId} - {vote.support ? "Support" : "Against"}
                 </span>
                 {vote.txHash && (
                   <a
@@ -152,7 +184,7 @@ export default function ProposalContent({
                     rel="noreferrer"
                     className="text-blue-600 hover:underline"
                   >
-                    查看链上交易
+                    View Transaction
                   </a>
                 )}
               </li>

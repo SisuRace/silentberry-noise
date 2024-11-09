@@ -36,21 +36,21 @@ export default function ProposalPreview({
     <div className="space-y-6">
       {/* 原始诉求 */}
       <div className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="font-medium text-gray-700">原始诉求</h3>
+        <h3 className="font-medium text-gray-700">Original Request</h3>
         <p className="mt-2 text-gray-600">{original}</p>
       </div>
 
       {/* AI 生成的提案 */}
       <div className="bg-white p-4 rounded-lg border">
         <div className="flex justify-between items-center">
-          <h3 className="font-medium text-gray-700">AI 生成的提案</h3>
+          <h3 className="font-medium text-gray-700">Generated Proposal</h3>
           {!isEditing && (
             <button
               onClick={() => setIsEditing(true)}
               disabled={isLoading}
               className="text-blue-600 hover:text-blue-800 text-sm disabled:opacity-50"
             >
-              编辑
+              Edit
             </button>
           )}
         </div>
@@ -59,7 +59,7 @@ export default function ProposalPreview({
           <div className="space-y-4 mt-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                标题
+                Title
               </label>
               <input
                 type="text"
@@ -76,7 +76,7 @@ export default function ProposalPreview({
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                内容
+                Content
               </label>
               <textarea
                 value={editedProposal.content}
@@ -93,7 +93,7 @@ export default function ProposalPreview({
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                摘要
+                Summary
               </label>
               <textarea
                 value={editedProposal.summary}
@@ -110,7 +110,7 @@ export default function ProposalPreview({
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                标签
+                Tags
               </label>
               <input
                 type="text"
@@ -122,7 +122,7 @@ export default function ProposalPreview({
                   })
                 }
                 className="w-full p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
-                placeholder="用逗号分隔多个标签"
+                placeholder="Separate multiple tags with commas"
               />
             </div>
 
@@ -135,7 +135,7 @@ export default function ProposalPreview({
                 disabled={isLoading}
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
               >
-                保存修改
+                Save Changes
               </button>
               <button
                 onClick={() => {
@@ -145,31 +145,31 @@ export default function ProposalPreview({
                 disabled={isLoading}
                 className="px-4 py-2 border rounded hover:bg-gray-50 disabled:opacity-50"
               >
-                取消
+                Cancel
               </button>
             </div>
           </div>
         ) : (
           <div className="mt-4 space-y-4">
             <div>
-              <h4 className="text-sm font-medium text-gray-700">标题</h4>
+              <h4 className="text-sm font-medium text-gray-700">Title</h4>
               <p className="mt-1 text-gray-600">{editedProposal.title}</p>
             </div>
 
             <div>
-              <h4 className="text-sm font-medium text-gray-700">内容</h4>
+              <h4 className="text-sm font-medium text-gray-700">Content</h4>
               <p className="mt-1 text-gray-600 whitespace-pre-wrap">
                 {editedProposal.content}
               </p>
             </div>
 
             <div>
-              <h4 className="text-sm font-medium text-gray-700">摘要</h4>
+              <h4 className="text-sm font-medium text-gray-700">Summary</h4>
               <p className="mt-1 text-gray-600">{editedProposal.summary}</p>
             </div>
 
             <div>
-              <h4 className="text-sm font-medium text-gray-700">标签</h4>
+              <h4 className="text-sm font-medium text-gray-700">Tags</h4>
               <div className="mt-1 flex gap-2">
                 {editedProposal.tags.map((tag) => (
                   <span
@@ -192,7 +192,7 @@ export default function ProposalPreview({
           disabled={isLoading || isEditing}
           className="px-4 py-2 text-red-600 hover:bg-red-50 rounded disabled:opacity-50"
         >
-          拒绝
+          Reject
         </button>
         <button
           onClick={onConfirm}
@@ -221,7 +221,7 @@ export default function ProposalPreview({
               />
             </svg>
           )}
-          {isLoading ? "提交中..." : "确认提交"}
+          {isLoading ? "Submitting..." : "Confirm Submission"}
         </button>
       </div>
     </div>

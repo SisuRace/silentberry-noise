@@ -6,7 +6,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 export default function WalletInfo() {
-  const { signer, openAction } = useApp();
+  const { signer, openAction, openSigner } = useApp();
   const { data: session } = useSession();
   const [balance, setBalance] = useState(ccc.Zero);
   useEffect(() => {
@@ -45,10 +45,17 @@ export default function WalletInfo() {
             CKB
           </div>
           <button
-            onClick={handleSignOut}
-            className="text-sm text-gray-600 hover:text-gray-900"
+            onClick={openSigner}
+            className="ml-3 h-7 py-0 text-sm flex items-center text-nowrap whitespace-nowrap rounded-md bg-gray-200 hover:bg-gray-300 "
+            style={{ paddingLeft: "0.5rem", paddingRight: "0.5rem" }}
           >
-            退出登录
+            {openAction}
+          </button>
+          <button
+            onClick={handleSignOut}
+            className="h-7 text-sm px-4 py-0 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50"
+          >
+            Sign Out
           </button>
         </div>
       )}
@@ -57,7 +64,7 @@ export default function WalletInfo() {
           onClick={handleSignIn}
           className="text-sm text-blue-600 hover:text-blue-800"
         >
-          登录
+          Sign In
         </button>
       )}
       {!signer && (
@@ -65,7 +72,7 @@ export default function WalletInfo() {
           onClick={open}
           className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
         >
-          连接钱包
+          Connect Wallet
         </button>
       )}
     </div>

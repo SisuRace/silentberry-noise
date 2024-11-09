@@ -3,8 +3,8 @@ import Providers from "@/components/providers/Providers";
 import "./globals.css";
 
 export const metadata = {
-  title: "公民提案平台",
-  description: "让每个声音都被听见，让每个建议都有价值",
+  title: "Silentberry Noise",
+  description: "Let every voice be heard, let every suggestion have value",
 };
 
 export default function RootLayout({
