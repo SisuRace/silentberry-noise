@@ -66,6 +66,7 @@ function validateProposal(
   proposal: GeneratedProposal
 ): asserts proposal is GeneratedProposal {
   const requiredFields = ["title", "content", "summary", "tags"];
+  console.log(proposal);
 
   for (const field of requiredFields) {
     if (!proposal[field as keyof GeneratedProposal]) {
@@ -82,6 +83,7 @@ function validateProposal(
   }
 
   if (typeof proposal.summary !== "string" || proposal.summary.length > 200) {
+    // 英文1个单词 = 1字节
     throw new Error("Proposal summary format is incorrect");
   }
 

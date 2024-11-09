@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
   /* config options here */
   reactStrictMode: false,
   compiler: {
-    removeConsole: process.env.NODE_ENV !== "development",
+    // removeConsole: process.env.NODE_ENV !== "development",
   },
   webpack(config) {
     config.externals.push("pino-pretty", "lokijs", "encoding");
