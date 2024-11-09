@@ -1,14 +1,19 @@
 "use client";
 
 import { useApp } from "@/contexts/WalletContext";
+import { createProposalVoteDob } from "@/lib/blockchain/ckbService";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface VoteButtonsProps {
   proposalId: string;
+  clusterId: string;
 }
 
-export default function VoteButtons({ proposalId }: VoteButtonsProps) {
+export default function VoteButtons({
+  proposalId,
+  clusterId,
+}: VoteButtonsProps) {
   const router = useRouter();
   const { signer } = useApp();
   const [isLoading, setIsLoading] = useState(false);
@@ -25,11 +30,21 @@ export default function VoteButtons({ proposalId }: VoteButtonsProps) {
       setIsLoading(true);
       setError("");
 
+      const { txHash, id } = await createProposalVoteDob(
+        clusterId,
+        proposalId,
+        signer,
+        support
+      );
+
       const response = await fetch("/api/votes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           proposalId,
+          clusterId,
+          txHash,
+          dobId: id,
           walletAddress,
           support,
         }),

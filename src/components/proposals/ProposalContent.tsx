@@ -129,7 +129,12 @@ export default function ProposalContent({
             />
           </div>
 
-          {proposal.txHash && <VoteButtons proposalId={proposal.id} />}
+          {proposal.txHash && (
+            <VoteButtons
+              proposalId={proposal.id}
+              clusterId={proposal.clusterId}
+            />
+          )}
         </div>
       </div>
     </div>

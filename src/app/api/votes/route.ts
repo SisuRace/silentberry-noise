@@ -1,51 +1,31 @@
-import { NextResponse } from "next/server";
+import { auth } from "@/lib/auth/auth";
 import { db } from "@/lib/prisma";
-import { submitVoteToCKB } from "@/lib/blockchain/ckbService";
+import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const { proposalId, walletAddress, support } = await req.json();
+    const session = await auth();
+    if (!session) {
+      return NextResponse.json({ error: "请先登录" }, { status: 401 });
+    }
 
-    if (!proposalId || !walletAddress) {
+    const { proposalId, clusterId, txHash, dobId, walletAddress, support } =
+      await req.json();
+
+    if (!proposalId || !walletAddress || !clusterId || !txHash || !dobId) {
+      console.log(proposalId, clusterId, txHash, dobId, walletAddress, support);
       return NextResponse.json({ error: "缺少必要参数" }, { status: 400 });
     }
-
-    // 获取用户信息
-    const profile = await db.profile.findUnique({
-      where: { walletAddress },
-    });
-
-    if (!profile) {
-      return NextResponse.json({ error: "用户未找到" }, { status: 404 });
-    }
-
-    // 检查是否已经投票
-    const existingVote = await db.vote.findUnique({
-      where: {
-        proposalId_userId: {
-          proposalId,
-          userId: profile.id,
-        },
-      },
-    });
-
-    if (existingVote) {
-      return NextResponse.json(
-        { error: "您已经对此提案投过票" },
-        { status: 400 }
-      );
-    }
-
-    // 提交投票到 CKB
-    const txHash = await submitVoteToCKB(proposalId, walletAddress, support);
 
     // 记录投票
     const vote = await db.vote.create({
       data: {
         proposalId,
-        userId: profile.id,
+        userId: session?.user.id,
         support,
         txHash,
+        clusterId,
+        dobId,
       },
       include: {
         proposal: true,

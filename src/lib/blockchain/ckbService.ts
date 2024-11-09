@@ -1,6 +1,6 @@
 import { ccc } from "@ckb-ccc/connector-react";
-import { createSporeCluster } from "@ckb-ccc/spore";
-import { Script } from "@ckb-lumos/lumos";
+import { JsonRpcTransformers } from "@ckb-ccc/core/advanced";
+import { createSpore, createSporeCluster } from "@ckb-ccc/spore";
 import { GeneratedProposal } from "../ai/proposalGenerator";
 
 export async function createProposalCluster(
@@ -40,42 +40,44 @@ export async function createProposalCluster(
   }
 }
 
-export async function submitVoteToCKB(
+export async function createProposalVoteDob(
   clusterId: string,
   proposalId: string,
-  walletAddress: string,
-  support: boolean,
-  lock: Script
+  signer: ccc.Signer,
+  support: boolean
 ) {
-  if (!walletAddress || !lock) {
+  if (!signer) {
     throw new Error("请先连接钱包");
   }
 
-  // try {
-  //   // 生成投票 DOB
-  //   const dob = await generateDob({
-  //     proposalId: proposalId,
-  //     voter: walletAddress,
-  //     support,
-  //     timestamp: Date.now(),
-  //   });
+  try {
+    const { tx, id } = await createSpore({
+      signer,
+      data: {
+        content: ccc.bytesFrom(
+          JSON.stringify({
+            proposalId,
+            support,
+          }),
+          "utf8"
+        ),
+        contentType: "text/plain",
+        clusterId,
+      },
+      clusterMode: "clusterCell",
+    });
 
-  //   const { txSkeleton } = await createSpore({
-  //     data: {
-  //       content: dob,
-  //       contentType: "text",
-  //       clusterId,
-  //     },
-  //     fromInfos: [walletAddress],
-  //     toLock: lock,
-  //   });
+    // Complete transaction
+    await tx.completeFeeBy(signer);
+    const signedTx = await signer.signTransaction(tx);
+    console.log(JSON.stringify(JsonRpcTransformers.transactionFrom(signedTx)));
 
-  //   const tx = await signTransaction(txSkeleton);
-  //   const rpc = new RPC(config.ckbNodeUrl);
-  //   const hash = await rpc.sendTransaction(tx, "passthrough");
-  //   return hash;
-  // } catch (error) {
-  //   console.error("投票上链失败:", error);
-  //   throw new Error("投票上链失败");
-  // }
+    // Send transaction
+    const txHash = await signer.sendTransaction(signedTx);
+    console.log(txHash);
+    return { txHash, id };
+  } catch (error) {
+    console.error("投票上链失败:", error);
+    throw new Error("投票上链失败");
+  }
 }

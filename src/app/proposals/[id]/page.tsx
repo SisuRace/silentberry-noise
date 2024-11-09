@@ -16,6 +16,7 @@ async function getProposal(id: string) {
     },
   });
 
+  console.log(proposal);
   return proposal;
 }
 
