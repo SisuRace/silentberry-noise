@@ -1,4 +1,5 @@
 import WalletInfo from "@/components/layout/WalletInfo";
+import ProposalHeader from "@/components/proposals/ProposalHeader";
 import Providers from "@/components/providers/Providers";
 
 export const metadata = {
@@ -16,6 +17,7 @@ export default function RootLayout({
       <body>
         <Providers>
           <WalletInfo />
+          <ProposalHeader />
           <main>{children}</main>
         </Providers>
       </body>

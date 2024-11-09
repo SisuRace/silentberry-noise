@@ -6,7 +6,7 @@ export const revalidate = 60; // 每分钟重新验证一次
 async function getProposals() {
   const proposals = await db.proposal.findMany({
     where: {
-      // status: "ACTIVE",
+      status: "ACTIVE",
     },
     include: {
       creator: true,

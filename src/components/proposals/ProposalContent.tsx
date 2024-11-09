@@ -74,7 +74,7 @@ export default function ProposalContent({
                 <>
                   <span>·</span>
                   <a
-                    href={`https://explorer.nervos.org/transaction/${proposal.txHash}`}
+                    href={`https://pudge.explorer.nervos.org/transaction/${proposal.txHash}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center hover:text-blue-600"
@@ -147,7 +147,7 @@ export default function ProposalContent({
                 </span>
                 {vote.txHash && (
                   <a
-                    href={`https://explorer.nervos.org/transaction/${vote.txHash}`}
+                    href={`https://pudge.explorer.nervos.org/transaction/${vote.txHash}`}
                     target="_blank"
                     rel="noreferrer"
                     className="text-blue-600 hover:underline"
