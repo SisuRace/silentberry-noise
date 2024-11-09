@@ -1,6 +1,7 @@
 import Navbar from "@/components/layout/Navbar";
 import Providers from "@/components/providers/Providers";
 import "./globals.css";
+import Footer from "@/components/layout/Footer";
 
 export const metadata = {
   title: "Silentberry Noise",
@@ -18,6 +19,7 @@ export default function RootLayout({
         <Providers>
           <Navbar />
           <main className="pt-6 pb-16">{children}</main>
+          <Footer />
         </Providers>
       </body>
     </html>
