@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
 import { db } from "@/lib/prisma";
+import { NextResponse } from "next/server";
 // import { submitToCKB } from "@/lib/blockchain/ckbService";
 
 export async function POST(req: Request) {
@@ -28,16 +28,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "无权操作此提案" }, { status: 403 });
     }
 
-    // 提交到 CKB
-    // const txHash = await submitToCKB(proposal, walletAddress);
-
     // 更新提案状态
     const updatedProposal = await db.proposal.update({
       where: {
         id: proposalId,
       },
       data: {
-        status: "ACTIVE",
+        status: "PENDING",
         // txHash: txHash,
       },
     });

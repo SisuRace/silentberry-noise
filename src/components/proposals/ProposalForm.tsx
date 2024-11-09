@@ -1,15 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useAccount } from "wagmi";
-import ProposalPreview from "./ProposalPreview";
-import type { GeneratedProposal } from "@/lib/ai/proposalGenerator";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { useApp } from "@/contexts/WalletContext";
+import type { GeneratedProposal } from "@/lib/ai/proposalGenerator";
+import { createProposalCluster } from "@/lib/blockchain/ckbService";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import ProposalPreview from "./ProposalPreview";
 
 export default function ProposalForm() {
   const router = useRouter();
-  const { address } = useAccount();
+  const { signer } = useApp();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -34,7 +35,7 @@ export default function ProposalForm() {
   const handleSubmitDraft = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!address) {
+    if (!signer) {
       setError("请先连接钱包");
       return;
     }
@@ -51,7 +52,10 @@ export default function ProposalForm() {
       const response = await fetch("/api/proposals/draft", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content, walletAddress: address }),
+        body: JSON.stringify({
+          content,
+          walletAddress: await signer.getInternalAddress(),
+        }),
       });
 
       const data = await response.json();
@@ -69,37 +73,77 @@ export default function ProposalForm() {
     }
   };
 
-  const handleConfirm = async () => {
+  const handlePublish = async () => {
     if (!generatedProposal?.id) {
       setError("提案信息不完整，请重试");
+      return;
+    }
+    if (!signer) {
+      setError("请先连接钱包");
       return;
     }
 
     try {
       setIsLoading(true);
       setError("");
+      const { txHash, id } = await createProposalCluster(
+        generatedProposal,
+        signer
+      );
+      console.log(txHash, id);
 
-      const response = await fetch("/api/proposals/confirm", {
+      // 调用API更新提案状态
+      const response = await fetch(
+        `/api/proposals/${generatedProposal.id}/publish`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ txHash: txHash, clusterId: id }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "发布失败");
+      }
+
+      router.push(`/proposals/${data.id}`);
+
+      // toast.success("提案已成功发布到链上");
+    } catch (error) {
+      console.error("发布失败:", error);
+      //   toast.error("发布失败：" + error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleEdit = async (edited: GeneratedProposal) => {
+    setGeneratedProposal(edited);
+    try {
+      setIsLoading(true);
+      setError("");
+
+      const response = await fetch("/api/proposals/update", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          proposalId: generatedProposal.id,
-          walletAddress: address,
+          ...edited,
         }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "确认失败");
+        throw new Error(data.error || "更新失败");
       }
-
-      router.push(`/proposals/${data.id}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "确认失败");
+      setError(err instanceof Error ? err.message : "更新失败");
     } finally {
       setIsLoading(false);
     }
+    setStep("preview");
   };
 
   if (step === "preview" && generatedProposal) {
@@ -108,9 +152,9 @@ export default function ProposalForm() {
         <ProposalPreview
           original={content}
           generated={generatedProposal}
-          onConfirm={handleConfirm}
+          onConfirm={handlePublish}
           onReject={() => setStep("draft")}
-          onEdit={(edited) => setGeneratedProposal(edited)}
+          onEdit={handleEdit}
           isLoading={isLoading}
         />
         {error && (

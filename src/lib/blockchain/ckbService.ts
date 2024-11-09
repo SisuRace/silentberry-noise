@@ -1,17 +1,14 @@
-import { generateDob } from "@/lib/blockchain/dobGenerator";
-import { RPC, Script } from "@ckb-lumos/lumos";
-import type { Proposal } from "@prisma/client";
-import { createCluster, createSpore } from "@spore-sdk/core";
-import { config } from "./config";
-import { signTransaction } from "./transaction";
+import { ccc } from "@ckb-ccc/connector-react";
+import { createSporeCluster } from "@ckb-ccc/spore";
+import { Script } from "@ckb-lumos/lumos";
+import { GeneratedProposal } from "../ai/proposalGenerator";
 
-export async function createProposal(
-  proposal: Proposal,
-  walletAddress: string,
-  lock: Script
+export async function createProposalCluster(
+  proposal: GeneratedProposal,
+  signer: ccc.Signer
 ) {
-  if (!walletAddress || !lock) {
-    return false;
+  if (!signer) {
+    throw new Error("请先连接钱包");
   }
 
   try {
@@ -25,19 +22,18 @@ export async function createProposal(
     //   rawContent: proposal.rawContent,
     // });
 
-    const { txSkeleton } = await createCluster({
+    const { tx, id } = await createSporeCluster({
+      signer,
       data: {
         name: proposal.title,
         description: proposal.summary,
       },
-      fromInfos: [walletAddress],
-      toLock: lock,
     });
 
-    const tx = await signTransaction(txSkeleton);
-    const rpc = new RPC(config.ckbNodeUrl);
-    const hash = await rpc.sendTransaction(tx, "passthrough");
-    return hash;
+    await tx.completeFeeBy(signer);
+    const signedTx = await signer.signTransaction(tx);
+    const txHash = await signer.sendTransaction(signedTx);
+    return { txHash, id };
   } catch (error) {
     console.error("CKB 提交失败:", error);
     throw new Error("提案上链失败");
@@ -52,34 +48,34 @@ export async function submitVoteToCKB(
   lock: Script
 ) {
   if (!walletAddress || !lock) {
-    return false;
+    throw new Error("请先连接钱包");
   }
 
-  try {
-    // 生成投票 DOB
-    const dob = await generateDob({
-      proposalId: proposalId,
-      voter: walletAddress,
-      support,
-      timestamp: Date.now(),
-    });
+  // try {
+  //   // 生成投票 DOB
+  //   const dob = await generateDob({
+  //     proposalId: proposalId,
+  //     voter: walletAddress,
+  //     support,
+  //     timestamp: Date.now(),
+  //   });
 
-    const { txSkeleton } = await createSpore({
-      data: {
-        content: dob,
-        contentType: "text",
-        clusterId,
-      },
-      fromInfos: [walletAddress],
-      toLock: lock,
-    });
+  //   const { txSkeleton } = await createSpore({
+  //     data: {
+  //       content: dob,
+  //       contentType: "text",
+  //       clusterId,
+  //     },
+  //     fromInfos: [walletAddress],
+  //     toLock: lock,
+  //   });
 
-    const tx = await signTransaction(txSkeleton);
-    const rpc = new RPC(config.ckbNodeUrl);
-    const hash = await rpc.sendTransaction(tx, "passthrough");
-    return hash;
-  } catch (error) {
-    console.error("投票上链失败:", error);
-    throw new Error("投票上链失败");
-  }
+  //   const tx = await signTransaction(txSkeleton);
+  //   const rpc = new RPC(config.ckbNodeUrl);
+  //   const hash = await rpc.sendTransaction(tx, "passthrough");
+  //   return hash;
+  // } catch (error) {
+  //   console.error("投票上链失败:", error);
+  //   throw new Error("投票上链失败");
+  // }
 }

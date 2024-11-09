@@ -29,6 +29,7 @@ model Proposal {
   tags       String[]
   status     ProposalStatus @default(PENDING)
   txHash     String?        @map("tx_hash")
+  clusterId  String?        @map("cluster_id")
   creator    Profile        @relation(fields: [creatorId], references: [id])
   creatorId  String         @map("creator_id")
   votes      Vote[]

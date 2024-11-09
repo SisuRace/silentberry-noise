@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { useAccount } from "wagmi";
+import { useApp } from "@/contexts/WalletContext";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 interface VoteButtonsProps {
   proposalId: string;
@@ -10,16 +10,17 @@ interface VoteButtonsProps {
 
 export default function VoteButtons({ proposalId }: VoteButtonsProps) {
   const router = useRouter();
-  const { address, isConnected } = useAccount();
+  const { signer } = useApp();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>("");
 
   const handleVote = async (support: boolean) => {
-    if (!isConnected || !address) {
+    if (!signer) {
       setError("请先连接钱包");
       return;
     }
 
+    const walletAddress = await signer.getInternalAddress();
     try {
       setIsLoading(true);
       setError("");
@@ -29,7 +30,7 @@ export default function VoteButtons({ proposalId }: VoteButtonsProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           proposalId,
-          walletAddress: address,
+          walletAddress,
           support,
         }),
       });
@@ -52,14 +53,14 @@ export default function VoteButtons({ proposalId }: VoteButtonsProps) {
       <div className="flex gap-4">
         <button
           onClick={() => handleVote(true)}
-          disabled={isLoading || !isConnected}
+          disabled={isLoading || !signer}
           className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50"
         >
           支持
         </button>
         <button
           onClick={() => handleVote(false)}
-          disabled={isLoading || !isConnected}
+          disabled={isLoading || !signer}
           className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50"
         >
           反对

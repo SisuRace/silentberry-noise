@@ -1,4 +1,4 @@
-import Navbar from "@/components/layout/Navbar";
+import WalletInfo from "@/components/layout/WalletInfo";
 import Providers from "@/components/providers/Providers";
 
 export const metadata = {
@@ -15,7 +15,7 @@ export default function RootLayout({
     <html lang="zh">
       <body>
         <Providers>
-          <Navbar />
+          <WalletInfo />
           <main>{children}</main>
         </Providers>
       </body>

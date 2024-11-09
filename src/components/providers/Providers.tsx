@@ -2,10 +2,10 @@
 
 import { SessionProvider } from "next-auth/react";
 
-import { config } from "@/lib/wagmi";
+import { AppProvider } from "@/contexts/WalletContext";
+import { ccc } from "@ckb-ccc/connector-react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { WagmiConfig } from "wagmi";
 
 const queryClient = new QueryClient();
 
@@ -25,12 +25,25 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <WagmiConfig config={config}>
-      <SessionProvider>
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
-      </SessionProvider>
-    </WagmiConfig>
+    <ccc.Provider
+      clientOptions={[
+        {
+          name: "ckb Testnet",
+          client: new ccc.ClientPublicTestnet(),
+        },
+        {
+          name: "ckb Mainnet",
+          client: new ccc.ClientPublicMainnet(),
+        },
+      ]}
+    >
+      <AppProvider>
+        <SessionProvider>
+          <QueryClientProvider client={queryClient}>
+            {children}
+          </QueryClientProvider>
+        </SessionProvider>
+      </AppProvider>
+    </ccc.Provider>
   );
 }
