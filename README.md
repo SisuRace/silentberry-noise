@@ -23,7 +23,16 @@ This project leverages cutting-edge technologies to facilitate citizen participa
 - **Blockchain-based Identity**: Ensuring anonymity and authenticity through decentralized identity management.
 - **AI-driven Proposal Generation**: Utilizing AI to capture and consolidate public opinions into actionable initiatives.
 
-## Get Faucet Token
+## Operation Guide
+1. Visit [https://noise.silentberry.co](https://noise.silentberry.co) and Login with your wallet.
+
+2. If you're the first time to visit your account, you need to get the faucet token.
+
+3. Click the "Create Proposal" button to generate a proposal.
+
+4. Click "Submit" to submit your proposal to the blockchain.
+
+5. After the proposal is generated, you can click the "Vote" button to vote for the proposal.
 
 Open [https://faucet.nervos.org/](https://faucet.nervos.org/) to receive test tokens.
 
