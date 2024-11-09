@@ -82,7 +82,7 @@ function validateProposal(
     throw new Error("Proposal content is too short");
   }
 
-  if (typeof proposal.summary !== "string" || proposal.summary.length > 200) {
+  if (typeof proposal.summary !== "string") {
     // 英文1个单词 = 1字节
     throw new Error("Proposal summary format is incorrect");
   }

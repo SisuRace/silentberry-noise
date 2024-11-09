@@ -1,6 +1,7 @@
 "use server";
 
 import { db } from "@/lib/prisma";
+import { headers } from "next/headers";
 import Link from "next/link";
 
 async function getRecentProposals() {
@@ -22,6 +23,8 @@ async function getRecentProposals() {
 }
 
 export default async function Home() {
+  headers();
+
   const recentProposals = await getRecentProposals();
 
   return (
