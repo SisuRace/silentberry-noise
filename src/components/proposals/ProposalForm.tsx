@@ -125,7 +125,7 @@ export default function ProposalForm() {
       setIsLoading(true);
       setError("");
 
-      const response = await fetch("/api/proposals/update", {
+      const response = await fetch(`/api/proposals/${edited.id}/update`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

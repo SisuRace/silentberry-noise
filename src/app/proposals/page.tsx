@@ -1,3 +1,5 @@
+import Container from "@/components/layout/Container";
+import PageHeader from "@/components/layout/PageHeader";
 import { db } from "@/lib/prisma";
 import Link from "next/link";
 
@@ -24,16 +26,18 @@ export default async function ProposalsPage() {
   const proposals = await getProposals();
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">活跃提案</h1>
-        <Link
-          href="/proposals/create"
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
-        >
-          创建提案
-        </Link>
-      </div>
+    <Container>
+      <PageHeader
+        title="活跃提案"
+        action={
+          <Link
+            href="/proposals/create"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
+          >
+            创建提案
+          </Link>
+        }
+      />
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {proposals.map((proposal) => (
@@ -72,6 +76,6 @@ export default async function ProposalsPage() {
           </div>
         ))}
       </div>
-    </div>
+    </Container>
   );
 }

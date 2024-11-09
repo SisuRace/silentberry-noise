@@ -35,24 +35,39 @@ export default function WalletInfo() {
   };
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center space-x-4">
       {isAuthenticated && signer && (
-        <div>
-          <div>
-            {" "}
-            {ccc.fixedPointToString(
-              balance / ccc.fixedPointFrom("1", 6),
-              2
-            )}{" "}
+        <div className="flex items-center space-x-4">
+          <div className="text-sm text-gray-600">
+            <span className="font-medium">
+              {ccc.fixedPointToString(balance / ccc.fixedPointFrom("1", 6), 2)}
+            </span>{" "}
             CKB
           </div>
-          <button onClick={handleSignOut}>{openAction}</button>
+          <button
+            onClick={handleSignOut}
+            className="text-sm text-gray-600 hover:text-gray-900"
+          >
+            退出登录
+          </button>
         </div>
       )}
       {!isAuthenticated && signer && (
-        <button onClick={handleSignIn}>Sign In</button>
+        <button
+          onClick={handleSignIn}
+          className="text-sm text-blue-600 hover:text-blue-800"
+        >
+          登录
+        </button>
       )}
-      {!signer && <button onClick={open}>Connect Wallet</button>}
+      {!signer && (
+        <button
+          onClick={open}
+          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+        >
+          连接钱包
+        </button>
+      )}
     </div>
   );
 }
